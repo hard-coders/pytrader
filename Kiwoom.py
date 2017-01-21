@@ -37,7 +37,8 @@ class Kiwoom(QAxWidget):
 		self.prev_next = None
 		
 		# signal & slot
-		self.OnEventConnect.connect()
+		self.OnEventConnect.connect(self.onEventConnect)
+		self.OnReceiveTrData.connect(self.onReceiveTrData)
 	
 	""" ======= METHODS ======= """
 	# set OHLC data form
@@ -159,7 +160,7 @@ class Kiwoom(QAxWidget):
 	def onReceiveCondition(self, sItemCode, sType, sConditionName, sConditionIndex):
 		pass
 	
-if __name__ == "__main__"
+if __name__ == "__main__":
 	app = QApplication(sys.argv)
 	
 	kiwoom = Kiwoom()

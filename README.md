@@ -1,3 +1,4 @@
 # pytrader
 Kiwoom stock trading system using Python 3.x
-https://wikidocs.net/book/110¸¦ Âü°íÇÏ¿© ¸¸µå´Â ¿¬½À ÇÁ·ÎÁ§Æ®ÀÔ´Ï´Ù.
+https://wikidocs.net/book/110
+ì°¸ê³ í•˜ì—¬ ë§Œë“œëŠ” ì—°ìŠµ í”„ë¡œì íŠ¸ì…ë‹ˆë‹¤.

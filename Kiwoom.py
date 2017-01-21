@@ -28,7 +28,6 @@ from PyQt5.QtWidgets import QApplication
 class Kiwoom(QAxWidget):
 	def __init__(self):
 		super().__init__()
-		
 		self.setControl("KHOPENAPI.KHOpenAPICtrl.1")
 		
 		# variables
@@ -39,6 +38,8 @@ class Kiwoom(QAxWidget):
 		# signal & slot
 		self.OnEventConnect.connect(self.onEventConnect)
 		self.OnReceiveTrData.connect(self.onReceiveTrData)
+		self.OnReceiveChejanData.connect(self.onReceiveTradeData)
+		
 	
 	""" ======= METHODS ======= """
 	# set OHLC data form
@@ -63,11 +64,12 @@ class Kiwoom(QAxWidget):
 
 	# get user info via sTag
 	def getLoginInfo(self, sTag):
-		pass
+		ret = self.dynamicCall("GetLoginInfo(QString)", sTag)
+		return ret
 	
 	# send order to server
 	def sendOrder(self, sRQName, sScreenNo, sAccountNo, nOrderType, sItemCode, nQty, nPrice, sBid, sOrgOrderNo):
-		pass
+		self.dynamicCall("SendOrder(QString, QString, QString, int, QString, int, int, QString, QString)", [sRQName, sScreenNo, sAccountNo, nOrderType, sItemCode, nQty, nPrice, sBid, sOrgOrderNo])
 	
 	# transmit input transaction to server
 	def setInputValue(self, sID, sValue):
@@ -111,6 +113,11 @@ class Kiwoom(QAxWidget):
 	def getCommData(self, sTrCode, sRecordName, nIndex, sItemName):
 		pass
 	
+	# 체결잔고 데이터 반환
+	def getTradeData(self, nFid):
+		ret = self.dynamicCall("GetChejanData(int)", nFid)
+		return ret
+	
 	""" ======= OpenAPI+ EVENTS ======= """
 	# 서버통신 후 데이터를 받은 시점을 알려준다
 	def onReceiveTrData(self, sScreenNo, sRQname, sTrCode, sRecordName, sPrevNext):
@@ -144,7 +151,11 @@ class Kiwoom(QAxWidget):
 	
 	# 체결데이터를 받은 시점을 알려준다
 	def onReceiveTradeData(self, sTradeType, nItemCnt, sFidList):
-		pass
+		print("sTradeType : ", sTradeType)
+		print(self.getTradeData(9203))
+		print(self.getTradeData(302))
+		print(self.getTradeData(900))
+		print(self.getTradeData(909))
 	
 	# server connection event
 	def onEventConnect(self, nErrCode):

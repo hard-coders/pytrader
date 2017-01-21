@@ -108,7 +108,7 @@
       <string>가격</string>
      </property>
     </widget>
-    <widget class="QComboBox" name="comboBox_account">
+    <widget class="QComboBox" name="qtOrder_comboBox_account">
      <property name="geometry">
       <rect>
        <x>44</x>
@@ -118,7 +118,7 @@
       </rect>
      </property>
     </widget>
-    <widget class="QComboBox" name="comboBox_order">
+    <widget class="QComboBox" name="qtOrder_comboBox_order">
      <property name="geometry">
       <rect>
        <x>44</x>
@@ -148,7 +148,7 @@
       </property>
      </item>
     </widget>
-    <widget class="QComboBox" name="comboBox_3">
+    <widget class="QComboBox" name="qtOrder_comboBox_type">
      <property name="geometry">
       <rect>
        <x>43</x>
@@ -168,7 +168,7 @@
       </property>
      </item>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_jongmok">
+    <widget class="QLineEdit" name="qtOrder_lineEdit_item">
      <property name="geometry">
       <rect>
        <x>44</x>
@@ -178,7 +178,7 @@
       </rect>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_code">
+    <widget class="QLineEdit" name="qtOrder_lineEdit_code">
      <property name="geometry">
       <rect>
        <x>44</x>
@@ -190,8 +190,11 @@
      <property name="styleSheet">
       <string notr="true">background-color:rgb(170, 255, 255);</string>
      </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
     </widget>
-    <widget class="QSpinBox" name="spinBox">
+    <widget class="QSpinBox" name="qtOrder_spinBox_qty">
      <property name="geometry">
       <rect>
        <x>43</x>
@@ -204,7 +207,7 @@
       <number>1000000</number>
      </property>
     </widget>
-    <widget class="QSpinBox" name="spinBox_2">
+    <widget class="QSpinBox" name="qtOrder_spinBox_price">
      <property name="geometry">
       <rect>
        <x>43</x>
@@ -220,7 +223,7 @@
       <number>50</number>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="qtOrder_pushButton_sendOrder">
      <property name="geometry">
       <rect>
        <x>90</x>

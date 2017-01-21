@@ -1,7 +1,7 @@
 """
-File Name : Kiwoom.py
-Author : Spike Lee
-Date : 2017.01.21
+File Name   : Kiwoom.py
+Author      : Spike Lee
+Date        : 2017.01.21
 
 Kiwoom class for Kiwoom OpenAPI+
 To use OpenAPI+, It inherited QAxWidget class.
@@ -74,9 +74,8 @@ class Kiwoom(QAxWidget):
 	
 	# Tran 데이터, 실시간 데이터, 체결잔고 데이터 반환
 	def commGetData(self, sItemCode, sRealType, sFieldName, nIndex, sInnerFieldName):
-		data = self.dynamicCall("CommGetData(QString, QString, QString, int, QString)", sItemCode, sRealType, sFieldName, nIndex, sInnerFieldName)
-		
-		return data.strip()
+		ret = self.dynamicCall("CommGetData(QString, QString, QString, int, QString)", sItemCode, sRealType, sFieldName, nIndex, sInnerFieldName)
+		return ret.strip()
 	
 	# 화면 내 모든 리얼데이터 요청을 제거
 	def disconnectRealData(self, sScreenNo):

@@ -45,6 +45,38 @@ class Kiwoom(QAxWidget):
 	# set OHLC data form
 	def initOHLCRawData(self):
 		self.ohlc = {'date':[], 'open':[], 'high':[], 'low':[], 'close':[]}
+		
+	# change string to currency format
+	def changeFormat(self, data, percent = 0):
+		is_minus = False
+		
+		if data.startswith('-'):
+			is_minus = True
+			
+		strip_str = data.lstrip('-0')
+		
+		if strip_str == '':
+			if percent == 1:
+				return '0.00'
+			else:
+				return '0'
+			
+		if percent == 1:
+			ret = format(int(strip_str) / 100, ',.2f')
+		elif percent == 2:
+			ret = format(float(strip_str), ',.2f')
+		else:
+			ret = format(int(strip_str), ',.d')
+			
+		if ret.startswith('.'):
+			ret = '0' + ret
+		if is_minus:
+			ret = '-' + ret
+			
+		return ret
+	
+	def initOpw00018data(self):
+		self.opw00018_data = {'single': [], 'multi': []}
 	
 	""" ======= OpenAPI+ METHODS ======= """
 	# execute login window
@@ -123,7 +155,7 @@ class Kiwoom(QAxWidget):
 	def onReceiveTrData(self, sScreenNo, sRQname, sTrCode, sRecordName, sPrevNext):
 		self.prev_next = sPrevNext
 
-		# tran 데이터 저장
+		# opt10001 : tran 데이터 저장
 		if sRQname == "opt10081_req":
 			cnt = self.getRepeatCnt(sTrCode, sRQname)
 			
@@ -139,6 +171,57 @@ class Kiwoom(QAxWidget):
 				self.ohlc['high'].append(int(high))
 				self.ohlc['low'].append(int(low))
 				self.ohlc['close'].append(int(close))
+		# opw00001 : 예수금 정보
+		elif sRQname == "opw00001_req":
+			estimated_day2_deposit = self.commGetData(sTrCode, "", sRQname, 0, "d+2추정예수금")
+			estimated_day2_deposit = self.changeFormat(estimated_day2_deposit)
+			self.opw00001_data = estimated_day2_deposit
+		# opw00018 : 계좌평가잔고내역 (한 번의 TR요청으로 최대 20개 보유 종목 가져옴)
+		elif sRQname == "opw00018_req":
+			# single data
+			single_data = []
+			
+			total_purchase_price = self.commGetData(sTrCode, "", sRQname, 0, "총매입금액")
+			single_data.append(self.changeFormat(total_purchase_price))
+			
+			total_eval_price = self.commGetData(sTrCode, "", sRQname, 0, "총평가금액")
+			single_data.append(self.changeFormat(total_eval_price))
+			
+			total_eval_profit_loss_price = self.commGetData(sTrCode, "", sRQname, 0, "총평가손익금액")
+			single_data.append(self.changeFormat(total_eval_profit_loss_price))
+			
+			total_profit_rate = self.commGetData(sTrCode, "", sRQname, 0, "총수익률(%)")
+			single_data.append(self.changeFormat(total_profit_rate, 1))
+			
+			estimated_deposit = self.commGetData(sTrCode, "", sRQname, 0, "추정예탁자산")
+			single_data.append(self.changeFormat(estimated_deposit))
+			
+			self.opw00018_data['single'] = single_data
+			
+			# multi data
+			cnt = self.getRepeatCnt(sTrCode, sRQname)
+			for i in range (cnt):
+				multi_data = []
+				
+				item_name = self.commGetData(sTrCode, "", sRQname, i, "종목명")
+				multi_data.append(item_name)
+				
+				quantity = self.commGetData(sTrCode, "", sRQname, i, "보유수량")
+				multi_data.append(self.changeFormat(quantity))
+				
+				purchase_price = self.commGetData(sTrCode, "", sRQname, i, "매입가")
+				multi_data.append(self.changeFormat(purchase_price))
+				
+				current_price = self.commGetData(str, "", sRQname, i, "현재가")
+				multi_data.append(self.changeFormat(current_price))
+				
+				eval_profit_loss_price = self.commGetData(sTrCode, "", sRQname, i, "평가손익")
+				multi_data.append(self.changeFormat(eval_profit_loss_price))
+				
+				profit_rate = self.commGetData(sTrCode, "", sRQname, i, "수익률(%)")
+				multi_data.append(self.changeFormat(profit_rate, 2))
+				
+				self.opw00018_data['multi'].append(multi_data)
 		self.tr_event_loop.exit()
 
 	# 실시간 데이터를 받은 시점을 알려준다
@@ -177,3 +260,5 @@ if __name__ == "__main__":
 	kiwoom = Kiwoom()
 	kiwoom.commConnect()
 	kiwoom.initOHLCRawData()
+	
+	kiwoom.initOpw00018data()

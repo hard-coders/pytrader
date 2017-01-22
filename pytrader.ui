@@ -249,7 +249,7 @@
     <property name="title">
      <string>잔고 및 보유종목현황</string>
     </property>
-    <widget class="QTableWidget" name="tableWidget">
+    <widget class="QTableWidget" name="qtTrade_tableWidget">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -293,7 +293,7 @@
       </property>
      </column>
     </widget>
-    <widget class="QTableWidget" name="tableWidget_2">
+    <widget class="QTableWidget" name="qtTrade_tableWidget2">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -333,7 +333,7 @@
       </property>
      </column>
     </widget>
-    <widget class="QCheckBox" name="checkBox">
+    <widget class="QCheckBox" name="qtTrade_checkBox_realtime">
      <property name="geometry">
       <rect>
        <x>420</x>
@@ -346,7 +346,7 @@
       <string>실시간 조회</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_2">
+    <widget class="QPushButton" name="qtTrade_pushButton_check">
      <property name="geometry">
       <rect>
        <x>510</x>

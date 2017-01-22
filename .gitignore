@@ -1,1 +1,3 @@
 account.txt
+*.xml
+__pycache__/Kiwoom.cpython-35.pyc

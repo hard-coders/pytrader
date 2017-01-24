@@ -250,6 +250,9 @@
      <string>잔고 및 보유종목현황</string>
     </property>
     <widget class="QTableWidget" name="qtTrade_tableWidget">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -257,6 +260,9 @@
        <width>581</width>
        <height>71</height>
       </rect>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
      </property>
      <property name="rowCount">
       <number>1</number>

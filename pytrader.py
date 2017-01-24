@@ -83,49 +83,48 @@ class MainWindow(QMainWindow, gui):
 		price       = self.qtOrder_spinBox_price.value()
 
 		e = self.kiwoom.sendOrder("sendOrder_req", "0101", account, order_type_lookup[order_type], code, num, price, bid_lookup[bid], "")
-		print(e)
+		print("send order result : " + e)
 		
 	def checkBalance(self):
-		self.kiwoom.initOpw00018data()
-		
 		# request opw00001
 		self.kiwoom.setInputValue("계좌번호", "8087071611")
 		self.kiwoom.setInputValue("비밀번호", self.account[1])
 		self.kiwoom.commRqData("opw00001_req", "opw00001", 0, "2000")
 		
 		# request opw00018
-		self.kiwoom.setInputValue("계좌번호", "8087071611")
-		self.kiwoom.setInputValue("비밀번호", self.account[1])
-		self.kiwoom.commRqData("opw00018_req", "opw00018", 0, "2000")
-		
-		while self.kiwoom.prev_next == '2':
-			time.sleep(0.2)
-			self.kiwoom.setInputValue("계좌번호", "8087071611")
-			self.kiwoom.setInputValue("비밀번호", self.account[1])
-			self.kiwoom.commRqData("opw00018_req", "opw00018", 0, "2000")
+		# self.kiwoom.setInputValue("계좌번호", "8087071611")
+		# self.kiwoom.setInputValue("비밀번호", self.account[1])
+		# self.kiwoom.commRqData("opw00018_req", "opw00018", 0, "2000")
+		#
+		# while self.kiwoom.prev_next == '2':
+		# 	time.sleep(0.2)
+		# 	self.kiwoom.setInputValue("계좌번호", "8087071611")
+		# 	self.kiwoom.setInputValue("비밀번호", self.account[1])
+		# 	self.kiwoom.commRqData("opw00018_req", "opw00018", 0, "2000")
 		
 		# print balance at table
+		print("table table table table table table table ")
 		item = QTableWidgetItem(self.kiwoom.opw00001_data)
 		item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
 		self.qtTrade_tableWidget.setItem(0, 0, item)
 		
-		for i in range(1, 6):
-			item = QTableWidgetItem(self.kiwoom.opw00018_data['single'][i-1])
-			item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
-			self.qtTrade_tableWidget2.setItem(0, i, item)
-		self.qtTrade_tableWidget.resizeRowsToContents()
+		# for i in range(1, 6):
+		# 	item = QTableWidgetItem(self.kiwoom.opw00018_data['single'][i-1])
+		# 	item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
+		# 	self.qtTrade_tableWidget2.setItem(0, i, item)
+		# self.qtTrade_tableWidget.resizeRowsToContents()
 		
 		# print own stock items at table
-		item_cnt = len(self.kiwoom.opw00018_data['multi'])
-		self.qtTrade_tableWidget2.setRowCount(item_cnt)
-		
-		for i in range(item_cnt):
-			row = self.kiwoom.opw00018_data['multi'][i]
-			for j in range(len(row)):
-				item = QTableWidgetItem(row[i])
-				item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
-				self.qtTrade_tableWidget2.setItem(i, j, item)
-		self.qtTrade_tableWidget2.resizeRowsToContents()
+		# item_cnt = len(self.kiwoom.opw00018_data['multi'])
+		# self.qtTrade_tableWidget2.setRowCount(item_cnt)
+		#
+		# for i in range(item_cnt):
+		# 	row = self.kiwoom.opw00018_data['multi'][i]
+		# 	for j in range(len(row)):
+		# 		item = QTableWidgetItem(row[i])
+		# 		item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
+		# 		self.qtTrade_tableWidget2.setItem(i, j, item)
+		# self.qtTrade_tableWidget2.resizeRowsToContents()
 		
 if __name__ == "__main__":
 	app = QApplication(sys.argv)

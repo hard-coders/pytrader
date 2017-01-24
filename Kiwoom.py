@@ -227,32 +227,30 @@ class Kiwoom(QAxWidget):
 			single_data.append(self.changeFormat(estimated_deposit))
 			
 			self.opw00018_data['single'] = single_data
-			# for i in range(0, len(self.opw00018_data['single'])):
-			# 	print(self.opw00018_data['single'][i])
 
 			# multi data
 			cnt = self.getRepeatCnt(sTrCode, sRQname)
 			for i in range (cnt):
 				multi_data = []
-
+				
 				item_name = self.commGetData(sTrCode, "", sRQname, i, "종목명")
 				multi_data.append(item_name)
-
+				
 				quantity = self.commGetData(sTrCode, "", sRQname, i, "보유수량")
 				multi_data.append(self.changeFormat(quantity))
-
+				
 				purchase_price = self.commGetData(sTrCode, "", sRQname, i, "매입가")
 				multi_data.append(self.changeFormat(purchase_price))
-
+				
 				current_price = self.commGetData(str, "", sRQname, i, "현재가")
 				multi_data.append(self.changeFormat(current_price))
-
+				
 				eval_profit_loss_price = self.commGetData(sTrCode, "", sRQname, i, "평가손익")
 				multi_data.append(self.changeFormat(eval_profit_loss_price))
-
+				
 				profit_rate = self.commGetData(sTrCode, "", sRQname, i, "수익률(%)")
 				multi_data.append(self.changeFormat(profit_rate, 2))
-
+				
 				self.opw00018_data['multi'].append(multi_data)
 		self.tr_event_loop.exit()
 		

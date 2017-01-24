@@ -107,23 +107,23 @@ class MainWindow(QMainWindow, gui):
 		item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
 		self.qtTrade_tableWidget.setItem(0, 0, item)
 
-		for i in range(0, len(self.kiwoom.opw00018_data['single'])):
+		for i in range(len(self.kiwoom.opw00018_data['single'])):
 			item = QTableWidgetItem(self.kiwoom.opw00018_data['single'][i])
 			item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
 			self.qtTrade_tableWidget.setItem(0, i + 1, item)
 		self.qtTrade_tableWidget.resizeRowsToContents()
 		
 		# print own stock items at table
-		# item_cnt = len(self.kiwoom.opw00018_data['multi'])
-		# self.qtTrade_tableWidget2.setRowCount(item_cnt)
-		#
-		# for i in range(item_cnt):
-		# 	row = self.kiwoom.opw00018_data['multi'][i]
-		# 	for j in range(len(row)):
-		# 		item = QTableWidgetItem(row[i])
-		# 		item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
-		# 		self.qtTrade_tableWidget2.setItem(i, j, item)
-		# self.qtTrade_tableWidget2.resizeRowsToContents()
+		item_cnt = len(self.kiwoom.opw00018_data['multi'])
+		self.qtTrade_tableWidget2.setRowCount(item_cnt)
+
+		for i in range(item_cnt):
+			row = self.kiwoom.opw00018_data['multi'][i]
+			for j in range(len(row)):
+				item = QTableWidgetItem(row[j])
+				item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
+				self.qtTrade_tableWidget2.setItem(i, j, item)
+		self.qtTrade_tableWidget2.resizeRowsToContents()
 		
 if __name__ == "__main__":
 	app = QApplication(sys.argv)

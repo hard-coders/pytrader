@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>834</width>
     <height>600</height>
    </rect>
   </property>
@@ -242,8 +242,8 @@
      <rect>
       <x>190</x>
       <y>10</y>
-      <width>601</width>
-      <height>401</height>
+      <width>641</width>
+      <height>381</height>
      </rect>
     </property>
     <property name="title">
@@ -257,8 +257,8 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>581</width>
-       <height>71</height>
+       <width>621</width>
+       <height>51</height>
       </rect>
      </property>
      <property name="editTriggers">
@@ -303,10 +303,13 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>100</y>
-       <width>581</width>
+       <y>80</y>
+       <width>621</width>
        <height>261</height>
       </rect>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
      </property>
      <column>
       <property name="text">
@@ -342,8 +345,8 @@
     <widget class="QCheckBox" name="qtTrade_checkBox_realtime">
      <property name="geometry">
       <rect>
-       <x>420</x>
-       <y>371</y>
+       <x>460</x>
+       <y>351</y>
        <width>81</width>
        <height>20</height>
       </rect>
@@ -355,8 +358,8 @@
     <widget class="QPushButton" name="qtTrade_pushButton_check">
      <property name="geometry">
       <rect>
-       <x>510</x>
-       <y>370</y>
+       <x>550</x>
+       <y>350</y>
        <width>75</width>
        <height>23</height>
       </rect>
@@ -372,7 +375,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>834</width>
      <height>21</height>
     </rect>
    </property>

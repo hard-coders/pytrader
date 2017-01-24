@@ -180,90 +180,82 @@ class Kiwoom(QAxWidget):
 		GetCommData()를 쓰라고 하는데 자세한건 나중에 수정
 		"""
 		self.prev_next = sPrevNext
-		
-		if sRQname == "opw00001_req":
+		print("sRqName : " + sRQname)
+		print("prev_next : " + self.prev_next)
+		print("sTrcode : " + sTrCode + "\n")
+		# opt10001 : tran 데이터 저장
+		# if sRQname == "opt10001_req":
+		# 	cnt = self.getRepeatCnt(sTrCode, sRQname)
+		#
+		# 	for i in range(cnt):
+		# 		date    = self.commGetData(sTrCode, "", sRQname, i, "일자")
+		# 		open    = self.commGetData(sTrCode, "", sRQname, i, "시가")
+		# 		high    = self.commGetData(sTrCode, "", sRQname, i, "고가")
+		# 		low     = self.commGetData(sTrCode, "", sRQname, i, "저가")
+		# 		close   = self.commGetData(sTrCode, "", sRQname, i, "현재가")
+		#
+		# 		self.ohlc['date'].append(date)
+		# 		self.ohlc['open'].append(int(open))
+		# 		self.ohlc['high'].append(int(high))
+		# 		self.ohlc['low'].append(int(low))
+		# 		self.ohlc['close'].append(int(close))
+		if sRQname == "opw00001_req":   # opw00001 : 예수금상세현황요청
 			estimated_day2_deposit = self.commGetData(sTrCode, "", sRQname, 0, "d+2추정예수금")
 			self.opw00001_data = self.changeFormat(estimated_day2_deposit)
+		elif sRQname == "opw00018_req": # opw00018 : 계좌평가잔고내역
+			"""
+			single : 개별
+			multi : 개별합산
+			한 번의 TR요청으로 최대 20개 보유 종목 가져옴
+			"""
+			# single data
+			single_data = []
+
+			total_purchase_price = self.commGetData(sTrCode, "", sRQname, 0, "총매입금액")
+			single_data.append(self.changeFormat(total_purchase_price))
+			
+			total_eval_price = self.commGetData(sTrCode, "", sRQname, 0, "총평가금액")
+			single_data.append(self.changeFormat(total_eval_price))
+			
+			total_eval_profit_loss_price = self.commGetData(sTrCode, "", sRQname, 0, "총평가손익금액")
+			single_data.append(self.changeFormat(total_eval_profit_loss_price))
+			
+			total_profit_rate = self.commGetData(sTrCode, "", sRQname, 0, "총수익률(%)")
+			single_data.append(self.changeFormat(total_profit_rate, 1))
+			
+			estimated_deposit = self.commGetData(sTrCode, "", sRQname, 0, "추정예탁자산")
+			single_data.append(self.changeFormat(estimated_deposit))
+			
+			self.opw00018_data['single'] = single_data
+			# for i in range(0, len(self.opw00018_data['single'])):
+			# 	print(self.opw00018_data['single'][i])
+
+			# multi data
+			cnt = self.getRepeatCnt(sTrCode, sRQname)
+			for i in range (cnt):
+				multi_data = []
+
+				item_name = self.commGetData(sTrCode, "", sRQname, i, "종목명")
+				multi_data.append(item_name)
+
+				quantity = self.commGetData(sTrCode, "", sRQname, i, "보유수량")
+				multi_data.append(self.changeFormat(quantity))
+
+				purchase_price = self.commGetData(sTrCode, "", sRQname, i, "매입가")
+				multi_data.append(self.changeFormat(purchase_price))
+
+				current_price = self.commGetData(str, "", sRQname, i, "현재가")
+				multi_data.append(self.changeFormat(current_price))
+
+				eval_profit_loss_price = self.commGetData(sTrCode, "", sRQname, i, "평가손익")
+				multi_data.append(self.changeFormat(eval_profit_loss_price))
+
+				profit_rate = self.commGetData(sTrCode, "", sRQname, i, "수익률(%)")
+				multi_data.append(self.changeFormat(profit_rate, 2))
+
+				self.opw00018_data['multi'].append(multi_data)
 		self.tr_event_loop.exit()
 		
-		
-	# def onReceiveTrData(self, sScreenNo, sRQname, sTrCode, sRecordName, sPrevNext, notUsed1, notUsed2, notUsed3, notUsed4):
-	# 	"""
-	# 	서버로부터 event를 받으면 자동 실행된다.
-	# 	수신 받은 데이터는 commGetData()를 통해 받는다.
-	# 	"""
-	# 	self.prev_next = sPrevNext
-	# 	# self.tr_event_loop.exit()
-	# 	# opt10001 : tran 데이터 저장
-	# 	# if sRQname == "opt10001_req":
-	# 	# 	cnt = self.getRepeatCnt(sTrCode, sRQname)
-	# 	#
-	# 	# 	for i in range(cnt):
-	# 	# 		date    = self.commGetData(sTrCode, "", sRQname, i, "일자")
-	# 	# 		open    = self.commGetData(sTrCode, "", sRQname, i, "시가")
-	# 	# 		high    = self.commGetData(sTrCode, "", sRQname, i, "고가")
-	# 	# 		low     = self.commGetData(sTrCode, "", sRQname, i, "저가")
-	# 	# 		close   = self.commGetData(sTrCode, "", sRQname, i, "현재가")
-	# 	#
-	# 	# 		self.ohlc['date'].append(date)
-	# 	# 		self.ohlc['open'].append(int(open))
-	# 	# 		self.ohlc['high'].append(int(high))
-	# 	# 		self.ohlc['low'].append(int(low))
-	# 	# 		self.ohlc['close'].append(int(close))
-		# opw00001 : 예수금 정보
-		# if sRQname == "opw00001_req":
-		# 	estimated_day2_deposit = self.commGetData(sTrCode, "", sRQname, 0, "d+2추정예수금")
-		# 	print("estimated_day2_deposit : " + estimated_day2_deposit + "\ttype : " + type(estimated_day2_deposit))
-			# self.opw00001_data = self.changeFormat(estimated_day2_deposit)
-			# self.opw00001_data = estimated_day2_deposit.lstrip('0')
-	# 	self.tr_event_loop.exit()
-	# 	# opw00018 : 계좌평가잔고내역 (한 번의 TR요청으로 최대 20개 보유 종목 가져옴)
-	# 	# elif sRQname == "opw00018_req":
-	# 	# 	# single data
-	# 	# 	single_data = []
-	# 	#
-	# 	# 	total_purchase_price = self.commGetData(sTrCode, "", sRQname, 0, "총매입금액")
-	# 	# 	single_data.append(self.changeFormat(total_purchase_price))
-	# 	#
-	# 	# 	total_eval_price = self.commGetData(sTrCode, "", sRQname, 0, "총평가금액")
-	# 	# 	single_data.append(self.changeFormat(total_eval_price))
-	# 	#
-	# 	# 	total_eval_profit_loss_price = self.commGetData(sTrCode, "", sRQname, 0, "총평가손익금액")
-	# 	# 	single_data.append(self.changeFormat(total_eval_profit_loss_price))
-	# 	#
-	# 	# 	total_profit_rate = self.commGetData(sTrCode, "", sRQname, 0, "총수익률(%)")
-	# 	# 	single_data.append(self.changeFormat(total_profit_rate, 1))
-	# 	#
-	# 	# 	estimated_deposit = self.commGetData(sTrCode, "", sRQname, 0, "추정예탁자산")
-	# 	# 	single_data.append(self.changeFormat(estimated_deposit))
-	# 	#
-	# 	# 	self.opw00018_data['single'] = single_data
-	# 	#
-	# 	# 	# multi data
-	# 	# 	cnt = self.getRepeatCnt(sTrCode, sRQname)
-	# 	# 	for i in range (cnt):
-	# 	# 		multi_data = []
-	# 	#
-	# 	# 		item_name = self.commGetData(sTrCode, "", sRQname, i, "종목명")
-	# 	# 		multi_data.append(item_name)
-	# 	#
-	# 	# 		quantity = self.commGetData(sTrCode, "", sRQname, i, "보유수량")
-	# 	# 		multi_data.append(self.changeFormat(quantity))
-	# 	#
-	# 	# 		purchase_price = self.commGetData(sTrCode, "", sRQname, i, "매입가")
-	# 	# 		multi_data.append(self.changeFormat(purchase_price))
-	# 	#
-	# 	# 		current_price = self.commGetData(str, "", sRQname, i, "현재가")
-	# 	# 		multi_data.append(self.changeFormat(current_price))
-	# 	#
-	# 	# 		eval_profit_loss_price = self.commGetData(sTrCode, "", sRQname, i, "평가손익")
-	# 	# 		multi_data.append(self.changeFormat(eval_profit_loss_price))
-	# 	#
-	# 	# 		profit_rate = self.commGetData(sTrCode, "", sRQname, i, "수익률(%)")
-	# 	# 		multi_data.append(self.changeFormat(profit_rate, 2))
-	# 	#
-	# 	# 		self.opw00018_data['multi'].append(multi_data)
-	
 	def onReceiveRealData(self, sItemCode):
 		pass
 	

@@ -94,7 +94,7 @@ class MainWindow(QMainWindow, gui):
 		# request opw00018 : 계좌평가잔고내역요청
 		self.kiwoom.setInputValue("계좌번호", "8087071611")
 		self.kiwoom.setInputValue("비밀번호", self.account[1])
-		self.kiwoom.commRqData("opw00018_req", "opw00018", 0, "2000")
+		self.kiwoom.commRqData("opw00018_req", "opw00018", 0, "2000")02
 		
 		while self.kiwoom.prev_next == '2':
 			time.sleep(0.2)

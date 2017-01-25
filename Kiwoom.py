@@ -99,6 +99,7 @@ class Kiwoom(QAxWidget):
 	
 	def sendOrder(self, sRQName, sScreenNo, sAccountNo, nOrderType, sItemCode, nQty, nPrice, sBid, sOrgOrderNo):
 		ret = self.dynamicCall("SendOrder(QString, QString, QString, int, QString, int, int, QString, QString)",[sRQName, sScreenNo, sAccountNo, nOrderType, sItemCode, nQty, nPrice, sBid, sOrgOrderNo])
+		print("SEND ORDER ERROR : " + str(ret))
 		return ret
 	
 	def setInputValue(self, sID, sValue):

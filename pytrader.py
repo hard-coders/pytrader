@@ -47,8 +47,8 @@ class MainWindow(QMainWindow, gui):
 		self.qtTrade_pushButton_check.clicked.connect(self.checkBalance)
 		
 		# execute methods
+		# self.conductBuySell()     # 현재 '주문완료' 전 일 경우 shutdown 오류 발생
 		self.loadBuySellList()
-		# self.conductBuySell()
 		
 	def timeoutStatusBar(self):
 		current_time = QTime.currentTime()
@@ -88,19 +88,20 @@ class MainWindow(QMainWindow, gui):
 		self.kiwoom.sendOrder("sendOrder_req", "0101", account, order_type_lookup[order_type], code, num, price, bid_lookup[bid], "")
 		
 	def checkBalance(self):
+		current_account = self.qtOrder_comboBox_account.currentText()
 		# request opw00001 : 예수금상세현황요청
-		self.kiwoom.setInputValue("계좌번호", "8087071611")
+		self.kiwoom.setInputValue("계좌번호", current_account)
 		self.kiwoom.setInputValue("비밀번호", self.account[1])
 		self.kiwoom.commRqData("opw00001_req", "opw00001", 0, "2000")
 		
 		# request opw00018 : 계좌평가잔고내역요청
-		self.kiwoom.setInputValue("계좌번호", "8087071611")
+		self.kiwoom.setInputValue("계좌번호", current_account)
 		self.kiwoom.setInputValue("비밀번호", self.account[1])
 		self.kiwoom.commRqData("opw00018_req", "opw00018", 0, "2000")
 		
 		while self.kiwoom.prev_next == '2':
 			time.sleep(0.2)
-			self.kiwoom.setInputValue("계좌번호", "8087071611")
+			self.kiwoom.setInputValue("계좌번호", current_account)
 			self.kiwoom.setInputValue("비밀번호", self.account[1])
 			self.kiwoom.commRqData("opw00018_req", "opw00018", 2, "2000")
 
@@ -169,7 +170,7 @@ class MainWindow(QMainWindow, gui):
 		self.qtAutoList_tableWidget.resizeRowsToContents()
 		
 	def conductBuySell(self):
-		bid_lookup = {'지정가': '00', '시장가': '03'}
+		bid_lookup = {'지정가': "00", '시장가': "03"}
 		
 		# read list from files
 		f = open("buy_list.txt", "rt")
@@ -190,10 +191,9 @@ class MainWindow(QMainWindow, gui):
 			bid         = split_data[2]
 			num         = split_data[3]
 			price       = split_data[4]
-		
-			if split_data[-1].rstrip() == '매수전':
-				self.kiwoom.sendOrder('sendOrder_req', '0101', account, 1, code, num, price, bid_lookup[bid], '')
-				
+		if split_data[-1].rstrip() == '매수전':
+			self.kiwoom.sendOrder('sendOrder_req', '0101', account, 1, code, num, price, bid_lookup[bid], '')
+
 		# update buy list file
 		for i, data in enumerate(buy_list):
 			buy_list[i] = buy_list[i].replace('매수전', '주문완료')
@@ -202,7 +202,7 @@ class MainWindow(QMainWindow, gui):
 		for data in buy_list:
 			f.write(data)
 		f.close()
-				
+		
 		# sell
 		for data in sell_list:
 			split_data  = data.split(';')
@@ -211,8 +211,8 @@ class MainWindow(QMainWindow, gui):
 			num         = split_data[3]
 			price       = split_data[4]
 			
-			if split_data[-1].rstrip() == '매도전':
-				self.kiwoom.sendOrder('sendOrder_req', '0101', account, 2, code, num, price, bid_lookup[bid], '')
+		if split_data[-1].rstrip() == '매도전':
+			self.kiwoom.sendOrder('sendOrder_req', '0101', account, 2, code, num, price, bid_lookup[bid], '')
 		
 		# update sell list file
 		for i, data in enumerate(sell_list):

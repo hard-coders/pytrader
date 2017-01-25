@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>834</width>
+    <width>879</width>
     <height>759</height>
    </rect>
   </property>
@@ -242,7 +242,7 @@
      <rect>
       <x>190</x>
       <y>10</y>
-      <width>641</width>
+      <width>681</width>
       <height>381</height>
      </rect>
     </property>
@@ -257,7 +257,7 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>621</width>
+       <width>661</width>
        <height>51</height>
       </rect>
      </property>
@@ -304,7 +304,7 @@
       <rect>
        <x>10</x>
        <y>80</y>
-       <width>621</width>
+       <width>661</width>
        <height>261</height>
       </rect>
      </property>
@@ -345,7 +345,7 @@
     <widget class="QCheckBox" name="qtTrade_checkBox_realtime">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>500</x>
        <y>351</y>
        <width>81</width>
        <height>20</height>
@@ -358,7 +358,7 @@
     <widget class="QPushButton" name="qtTrade_pushButton_check">
      <property name="geometry">
       <rect>
-       <x>550</x>
+       <x>590</x>
        <y>350</y>
        <width>75</width>
        <height>23</height>
@@ -374,7 +374,7 @@
      <rect>
       <x>190</x>
       <y>400</y>
-      <width>641</width>
+      <width>681</width>
       <height>311</height>
      </rect>
     </property>
@@ -386,7 +386,7 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>621</width>
+       <width>661</width>
        <height>281</height>
       </rect>
      </property>
@@ -434,7 +434,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>834</width>
+     <width>879</width>
      <height>21</height>
     </rect>
    </property>

@@ -158,8 +158,13 @@ class Kiwoom(QAxWidget):
 		pass
 	
 	def getCommData(self, sTrCode, sRecordName, nIndex, sItemName):
-		""" 수신데이터 리턴"""
-		pass
+		"""
+		cf) commGetData
+		개발가이드에서 CommGetData보다 제약이 적은 GetCommData를 쓰라고 명시
+		ex)현재가출력 : openAPI.GetCommData("opt00001_req", "주식기본정보", 0, "현재가")
+		"""
+		ret = self.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRecordName, nIndex, sItemName)
+		return ret
 	
 	def getTradeData(self, nFid):
 		""" 체결잔고 데이터 리턴"""
@@ -180,9 +185,8 @@ class Kiwoom(QAxWidget):
 		GetCommData()를 쓰라고 하는데 자세한건 나중에 수정
 		"""
 		self.prev_next = sPrevNext
-		print("sRqName : " + sRQname)
-		print("prev_next : " + self.prev_next)
-		print("sTrcode : " + sTrCode + "\n")
+		print("RqName : " + sRQname)
+		print("Trcode : " + sTrCode + "\n")
 		# opt10001 : tran 데이터 저장
 		# if sRQname == "opt10001_req":
 		# 	cnt = self.getRepeatCnt(sTrCode, sRQname)
@@ -242,7 +246,7 @@ class Kiwoom(QAxWidget):
 				purchase_price = self.commGetData(sTrCode, "", sRQname, i, "매입가")
 				multi_data.append(self.changeFormat(purchase_price))
 				
-				current_price = self.commGetData(str, "", sRQname, i, "현재가")
+				current_price = self.commGetData(sTrCode, "", sRQname, i, "현재가")
 				multi_data.append(self.changeFormat(current_price))
 				
 				eval_profit_loss_price = self.commGetData(sTrCode, "", sRQname, i, "평가손익")
@@ -280,8 +284,6 @@ class Kiwoom(QAxWidget):
 		조건검색 실시간 편입, 이탈 종목을 받을 시점을 알려준다
 		:param sItemCode:
 		:param sType: 'I' = 편입, 'D' = 이탈
-		:param sConditionName:
-		:param sConditionIndex:
 		:return:
 		"""
 		pass

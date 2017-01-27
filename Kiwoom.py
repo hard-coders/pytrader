@@ -33,7 +33,7 @@ class Kiwoom(QAxWidget):
 		self.login_event_loop   = None
 		self.tr_event_loop      = None
 		self.prev_next          = None
-		self.ohlc               = {'date':[], 'open':[], 'high':[], 'low':[], 'close':[]}
+		self.ohlcv              = {'date':[], 'open':[], 'high':[], 'low':[], 'close':[], 'volume':[]}
 		self.opw00001_data      = ""
 		self.opw00018_data      = {'single': [], 'multi': []}
 		
@@ -184,30 +184,31 @@ class Kiwoom(QAxWidget):
 		서버로부터 event를 받으면 자동 실행된다.
 		수신 받은 데이터는 commGetData()를 통해 받는다.
 		GetCommData()를 쓰라고 하는데 자세한건 나중에 수정
+		sPrevNext: 연속 조회가 필요하면 2를 리턴 받음
 		"""
 		self.prev_next = sPrevNext
 		print("RqName : " + sRQname)
 		print("Trcode : " + sTrCode + "\n")
-		# opt10001 : tran 데이터 저장
-		# if sRQname == "opt10001_req":
-		# 	cnt = self.getRepeatCnt(sTrCode, sRQname)
-		#
-		# 	for i in range(cnt):
-		# 		date    = self.commGetData(sTrCode, "", sRQname, i, "일자")
-		# 		open    = self.commGetData(sTrCode, "", sRQname, i, "시가")
-		# 		high    = self.commGetData(sTrCode, "", sRQname, i, "고가")
-		# 		low     = self.commGetData(sTrCode, "", sRQname, i, "저가")
-		# 		close   = self.commGetData(sTrCode, "", sRQname, i, "현재가")
-		#
-		# 		self.ohlc['date'].append(date)
-		# 		self.ohlc['open'].append(int(open))
-		# 		self.ohlc['high'].append(int(high))
-		# 		self.ohlc['low'].append(int(low))
-		# 		self.ohlc['close'].append(int(close))
-		if sRQname == "opw00001_req":   # opw00001 : 예수금상세현황요청
+		
+		if sRQname == "opt10081_req":   # opt10081 : 주식일봉차트조회요청
+			cnt = self.getRepeatCnt(sTrCode, sRQname)
+
+			for i in range(cnt):
+				date    = self.commGetData(sTrCode, "", sRQname, i, "일자")
+				open    = self.commGetData(sTrCode, "", sRQname, i, "시가")
+				high    = self.commGetData(sTrCode, "", sRQname, i, "고가")
+				low     = self.commGetData(sTrCode, "", sRQname, i, "저가")
+				close   = self.commGetData(sTrCode, "", sRQname, i, "현재가")
+
+				self.ohlcv['date'].append(date)
+				self.ohlcv['open'].append(int(open))
+				self.ohlcv['high'].append(int(high))
+				self.ohlcv['low'].append(int(low))
+				self.ohlcv['close'].append(int(close))
+		elif sRQname == "opw00001_req":   # opw00001 : 예수금상세현황요청
 			estimated_day2_deposit = self.commGetData(sTrCode, "", sRQname, 0, "d+2추정예수금")
 			self.opw00001_data = self.changeFormat(estimated_day2_deposit)
-		elif sRQname == "opw00018_req": # opw00018 : 계좌평가잔고내역
+		elif sRQname == "opw00018_req":     # opw00018 : 계좌평가잔고내역
 			"""
 			single : 개별
 			multi : 개별합산

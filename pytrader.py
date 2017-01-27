@@ -10,6 +10,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from Kiwoom import *
+import pandas as pd
+import sqlite3
 
 gui = uic.loadUiType("pytrader.ui")[0]
 
@@ -49,14 +51,21 @@ class MainWindow(QMainWindow, gui):
 		# execute methods
 		# self.conductBuySell()     # 현재 '주문완료' 전 일 경우 shutdown 오류 발생
 		self.loadBuySellList()
+		self.saveDayData()
+		
+		# DB
+		df = pd.DataFrame(self.kiwoom.ohlcv, self.kiwoom.ohlcv['date'], ['open', 'high', 'low', 'close'])
+		con = sqlite3.connect("stock.db")
+		df.to_sql('039490', con, if_exists='replace')
+		
 		
 	def timeoutStatusBar(self):
 		current_time = QTime.currentTime()
-		text_time = current_time.toString("hh:mm:ss")
+		text_time = current_time.toString("ap h시 m분 s초")
 		time_msg = "현재시간 : " + text_time
 		
 		if self.kiwoom.getConnectState() == 1:
-			state_msg = "서버 연결 중"
+			state_msg = "서버 접속 중"
 		else:
 			state_msg = "서버 끊김"
 			
@@ -67,6 +76,8 @@ class MainWindow(QMainWindow, gui):
 	def timeoutBalanceTable(self):
 		if self.qtTrade_checkBox_realtime.isChecked() == True:
 			self.checkBalance()
+		else:
+			pass
 		
 	def itemCodeChanged(self):
 		""" print item code by hangul """
@@ -126,7 +137,20 @@ class MainWindow(QMainWindow, gui):
 				item = QTableWidgetItem(row[j])
 				item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
 				self.qtTrade_tableWidget2.setItem(i, j, item)
+		self.kiwoom.opw00018_data['multi'] = []
 		self.qtTrade_tableWidget2.resizeRowsToContents()
+		
+	def saveDayData(self):
+		self.kiwoom.setInputValue("종목코드", "039490")
+		self.kiwoom.setInputValue("기준일자", "20170123")
+		self.kiwoom.setInputValue("수정주가구분", 1)
+		self.kiwoom.commRqData("opt10081_req", "opt10081", 0, "0001")
+		
+		while self.kiwoom.prev_next == '2':
+			self.kiwoom.setInputValue("종목코드", "039490")
+			self.kiwoom.setInputValue("기준일자", "20170123")
+			self.kiwoom.setInputValue("수정주가구분", 1)
+			self.kiwoom.commRqData("opt10081_req", "opt10081", 2, "0001")
 		
 	def loadBuySellList(self):
 		# read list from files

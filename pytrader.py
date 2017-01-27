@@ -12,6 +12,10 @@ from PyQt5 import uic
 from Kiwoom import *
 import pandas as pd
 import sqlite3
+import pandas as pd
+import pandas_datareader.data as web
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 gui = uic.loadUiType("pytrader.ui")[0]
 
@@ -47,16 +51,17 @@ class MainWindow(QMainWindow, gui):
 		self.qtOrder_lineEdit_item.textChanged.connect(self.itemCodeChanged)
 		self.qtOrder_pushButton_sendOrder.clicked.connect(self.sendOrder)
 		self.qtTrade_pushButton_check.clicked.connect(self.checkBalance)
+		self.qtEx_pushButton_graph.clicked.connect(self.createGraphWindow)
 		
 		# execute methods
 		# self.conductBuySell()     # 현재 '주문완료' 전 일 경우 shutdown 오류 발생
 		self.loadBuySellList()
-		self.saveDayData()
+		# self.saveDayData('035720', '20170102')
 		
 		# DB
-		df = pd.DataFrame(self.kiwoom.ohlcv, self.kiwoom.ohlcv['date'], ['open', 'high', 'low', 'close'])
-		con = sqlite3.connect("stock.db")
-		df.to_sql('039490', con, if_exists='replace')
+		# df = pd.DataFrame(self.kiwoom.ohlcv, self.kiwoom.ohlcv['date'], ['open', 'high', 'low', 'close', 'volume'])
+		# con = sqlite3.connect("stock.db")
+		# df.to_sql('035720', con, if_exists='replace')
 		
 		
 	def timeoutStatusBar(self):
@@ -140,18 +145,33 @@ class MainWindow(QMainWindow, gui):
 		self.kiwoom.opw00018_data['multi'] = []
 		self.qtTrade_tableWidget2.resizeRowsToContents()
 		
-	def saveDayData(self):
-		self.kiwoom.setInputValue("종목코드", "039490")
-		self.kiwoom.setInputValue("기준일자", "20170123")
-		self.kiwoom.setInputValue("수정주가구분", 1)
-		self.kiwoom.commRqData("opt10081_req", "opt10081", 0, "0001")
-		
-		while self.kiwoom.prev_next == '2':
-			self.kiwoom.setInputValue("종목코드", "039490")
-			self.kiwoom.setInputValue("기준일자", "20170123")
+	def saveDayData(self, sItemCode, sDate):
+		"""
+		메소드 이름도 바꾸고 좀 더 다듬자 = waterfall 방식의 폐해
+		"""
+		prev_next = '0'
+		while True:
+			self.kiwoom.setInputValue("종목코드", sItemCode)
+			self.kiwoom.setInputValue("기준일자", sDate)
 			self.kiwoom.setInputValue("수정주가구분", 1)
-			self.kiwoom.commRqData("opt10081_req", "opt10081", 2, "0001")
-		
+			self.kiwoom.commRqData("opt10081_req", "opt10081", prev_next, "0001")
+			if self.kiwoom.prev_next != '2':
+				break
+			else:
+				time.sleep(0.2)
+				prev_next = '2'
+		# self.kiwoom.setInputValue("종목코드", "039490")
+		# self.kiwoom.setInputValue("기준일자", "20170123")
+		# self.kiwoom.setInputValue("수정주가구분", 1)
+		# self.kiwoom.commRqData("opt10081_req", "opt10081", 0, "0001")
+		#
+		# while self.kiwoom.prev_next == '2':
+		# 	time.sleep(0.2)
+		# 	self.kiwoom.setInputValue("종목코드", "039490")
+		# 	self.kiwoom.setInputValue("기준일자", "20170123")
+		# 	self.kiwoom.setInputValue("수정주가구분", 1)
+		# 	self.kiwoom.commRqData("opt10081_req", "opt10081", 2, "0001")
+			
 	def loadBuySellList(self):
 		# read list from files
 		f = open("buy_list.txt", "rt")
@@ -247,8 +267,64 @@ class MainWindow(QMainWindow, gui):
 			f.write(data)
 		f.close()
 		
+	def createGraphWindow(self):
+		win = GraphWindow()
+		win.exec_()
+		
+class GraphWindow(QDialog):
+	def __init__(self):
+		super().__init__()
+		self.setupUi()
+	
+	def setupUi(self):
+		self.setGeometry(200, 200, 1200, 600)
+		self.setWindowTitle("종목그래프")
+		
+		# forms
+		self.line_edit = QLineEdit()
+		self.push_button = QPushButton("차트 그리기")
+		self.push_button.clicked.connect(self.pushButtonClicked)
+		
+		# create a canvas
+		self.fig = plt.Figure()
+		self.canvas = FigureCanvas(self.fig)
+		
+		# layouts
+		leftLayout = QVBoxLayout()
+		leftLayout.addWidget(self.canvas)
+		
+		rightLayout = QVBoxLayout()
+		rightLayout.addWidget(self.line_edit)
+		rightLayout.addWidget(self.push_button)
+		rightLayout.addStretch(1)
+		
+		layout = QHBoxLayout()
+		layout.addLayout(leftLayout)
+		layout.addLayout(rightLayout)
+		layout.setStretchFactor(leftLayout, 1)
+		layout.setStretchFactor(rightLayout, 0)
+		
+		self.setLayout(layout)
+	
+	def pushButtonClicked(self):
+		code = self.line_edit.text()
+		df = web.DataReader(code + '.KS', "yahoo")
+		df['MA20'] = df['Adj Close'].rolling(window=20).mean()
+		df['MA60'] = df['Adj Close'].rolling(window=60).mean()
+		
+		ax = self.fig.add_subplot(111)
+		ax.plot(df.index, df['Adj Close'], label = 'Adj Close')
+		ax.plot(df.index, df['MA20'], label='MA20')
+		ax.plot(df.index, df['MA60'], label='MA60')
+		ax.legend(loc='upper right')
+		ax.grid()
+		
+		print(df.head())
+		
+		self.canvas.draw()
+		
 if __name__ == "__main__":
 	app = QApplication(sys.argv)
-	window = MainWindow()
-	window.show()
+	main_window = MainWindow()
+	main_window.show()
 	app.exec_()

@@ -17,6 +17,9 @@ Diff between OpenAPI+ and Kiwoom class
 		Jongmok -> Item
 		Gubun -> TradeType
 		Hoga -> Bid     *I used this word same as 'asked' price
+		
+!! NOTE !!
+ Kiwoom OpenAPI+ allow TRANSACTION request only 5 times in a second.
 """
 
 import sys
@@ -199,12 +202,14 @@ class Kiwoom(QAxWidget):
 				high    = self.commGetData(sTrCode, "", sRQname, i, "고가")
 				low     = self.commGetData(sTrCode, "", sRQname, i, "저가")
 				close   = self.commGetData(sTrCode, "", sRQname, i, "현재가")
+				volume  = self.commGetData(sTrCode, "", sRQname, i, "거래량")
 
 				self.ohlcv['date'].append(date)
 				self.ohlcv['open'].append(int(open))
 				self.ohlcv['high'].append(int(high))
 				self.ohlcv['low'].append(int(low))
 				self.ohlcv['close'].append(int(close))
+				self.ohlcv['volume'].append(int(volume))
 		elif sRQname == "opw00001_req":   # opw00001 : 예수금상세현황요청
 			estimated_day2_deposit = self.commGetData(sTrCode, "", sRQname, 0, "d+2추정예수금")
 			self.opw00001_data = self.changeFormat(estimated_day2_deposit)
